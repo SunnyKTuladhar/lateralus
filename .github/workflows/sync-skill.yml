@@ -1,0 +1,39 @@
+name: Sync Skill Mirror
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "skills/lateralus/SKILL.md"
+      - "skills/lateralus-caveman/SKILL.md"
+      - ".github/workflows/sync-skill.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync source to mirror
+        run: |
+          mkdir -p .github/skills/lateralus
+          cp skills/lateralus/SKILL.md .github/skills/lateralus/SKILL.md
+          mkdir -p .github/skills/lateralus-caveman
+          cp skills/lateralus-caveman/SKILL.md .github/skills/lateralus-caveman/SKILL.md
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/skills/lateralus/SKILL.md .github/skills/lateralus-caveman/SKILL.md
+          git commit -m "chore: sync lateralus skill mirrors [skip ci]"
+          git push
