@@ -3,10 +3,11 @@
 Lateralus is a stuck-debugging skill for coding agents.
 
 It is designed for situations where normal debugging loops are not producing progress.
-Instead of repeating nearby fixes, it forces an explicit two-tier ideation pass:
+Instead of repeating nearby fixes, it forces an explicit three-tier ideation pass:
 
-1. Tier 1: plausible alternatives that are testable now
-2. Tier 2: speculative reframes that can unlock new hypotheses
+1. Tier 1 · Ground: concrete, testable hypotheses outside the obvious failure category
+2. Tier 2 · Balanced: assumption-questioning hypotheses that remain loosely verifiable
+3. Tier 3 · Wild: speculative reframes designed to jolt new associations
 
 ## Use this skill when
 
@@ -23,9 +24,10 @@ Instead of repeating nearby fixes, it forces an explicit two-tier ideation pass:
 ## Output contract
 
 1. Dead ends already ruled out
-2. Tier 1 list with concrete test step for each
-3. Tier 2 list of reframes
-4. Closing question asking which direction to investigate
+2. Tier 1 (Ground) list — each with exact diagnostic to run before fixing
+3. Tier 2 (Balanced) list — assumption + loose test signal
+4. Tier 3 (Wild) list — non-literal reframes
+5. Closing question asking which direction to investigate
 
 ## Source of truth
 

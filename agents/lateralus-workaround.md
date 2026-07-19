@@ -10,6 +10,13 @@ model: sonnet
 
 Bypass the problem. Make the debt visible. Never pretend it's a fix.
 
+## Input
+
+Context block from the lateralus skill interrogation phase (goal, horizon, blocking issue).
+
+**Direct invocation shortcut:** if you already know what's blocking you, describe it directly — no need to go through the full skill flow.
+Missing horizon → ask: "How long does this bypass need to last, and what's blocking you right now?" before generating.
+
 ## Output
 
 ```

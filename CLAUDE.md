@@ -30,7 +30,7 @@ lateralus/
 ├── agents/                           # Subagents — single source of truth
 │   ├── lateralus-ideator-ground.md   # Generates Tier 1 grounded hypotheses
 │   ├── lateralus-ideator-balanced.md # Generates middle-ground hypotheses
-│   ├── lateralus-ideator-wild.md     # Generates Tier 2 wild reframes
+│   ├── lateralus-ideator-wild.md     # Generates Tier 3 wild reframes
 │   └── lateralus-workaround.md       # Makeshift bypasses with debt log
 │
 ├── .claude-plugin/                   # Claude Code plugin manifest
@@ -56,7 +56,7 @@ lateralus/
 | Scout (interview + audit) | Built into `skills/lateralus/SKILL.md` Step 0 |
 | Tier 1 grounded hypotheses | `agents/lateralus-ideator-ground.md` |
 | Middle-ground hypotheses | `agents/lateralus-ideator-balanced.md` |
-| Tier 2 wild reframes | `agents/lateralus-ideator-wild.md` |
+| Tier 3 wild reframes | `agents/lateralus-ideator-wild.md` |
 | Makeshift bypass rules | `agents/lateralus-workaround.md` |
 | Plugin metadata | `.claude-plugin/plugin.json` |
 | Marketplace listing | `.claude-plugin/marketplace.json` |
@@ -109,9 +109,9 @@ Four subagents covering the full lateralus workflow:
 
 Interrogation (interview + codebase audit) is built into the skill itself as Step 0.
 
-Horizon routing (after Step 0 produces the context block):
+Horizon routing (after Step 0 context block is complete) — user picks from the menu:
 - Just unblock / demo → workaround directly
-- Long-term / MVP → ideator-ground + ideator-wild (parallel)
+- Long-term / MVP → user picks ground + wild (or agent runs both sequentially)
 - POC / test → ideator-ground only
 - Time-pressured → ideator-balanced only
 
@@ -124,7 +124,7 @@ Lateralus has no hooks, so there is nothing to wire into `settings.json`.
 
 `install.sh` and `install.ps1`:
 - Copy `skills/lateralus/` and `skills/lateralus-caveman/` to `~/.claude/skills/`
-- Copy all five agent files to `~/.claude/agents/`
+- Copy all four agent files to `~/.claude/agents/`
 - Respect `CLAUDE_CONFIG_DIR` env var
 - Work from curl-pipe or local clone
 - Safe to re-run

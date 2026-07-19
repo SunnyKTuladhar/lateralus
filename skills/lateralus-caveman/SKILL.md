@@ -10,7 +10,17 @@ Goal first. Break tunnel vision. Generate outside failed approach.
 
 ## Step 0 — Interrogate before ideating (always first)
 
-### P1 — Present options, ask user to pick
+### P1 — Read codebase silently first
+
+1. Check for `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` at repo root — read fully if present.
+2. If absent: detect stack from `go.mod` / `package.json` / etc., skim `README.md` (60 lines), run `git log -10 --oneline`, glob for config files.
+3. Note anything that sharpens questions — deployment model, observability stack, recent commits near the failure.
+
+No codebase accessible (pasted scenario) → skip to P2.
+
+### P2 — Present options, ask user to pick
+
+If P1 found context → surface it briefly before the menu.
 
 ```
 Four paths — which fits?
@@ -26,14 +36,18 @@ Pick a number or describe your situation.
 Situation described → infer best fit, confirm before proceeding.
 Distressed / deadline → suggest [4] first.
 
-### P2 — Tailored questions by choice
+### P3 — Tailored questions by choice
 
 **[1] Ground:**
 ```
 1. What tried, why failed?
 2. Which component/layer fails?
-3. What can't change?
-4. How will you verify a fix?
+3. What observability do you have? (profiler, APM, logs, metrics)
+4. What does monitoring show beyond the headline symptom?
+5. When did it start — correlates with a specific change?
+6. Any profiling data collected yet? (heap dump, flame graph, etc.)
+7. What can't change?
+8. How will you verify a fix?
 ```
 
 **[2] Balanced:**
@@ -61,7 +75,7 @@ Distressed / deadline → suggest [4] first.
 
 Cold → one question at a time. Engaged → batch the path's questions.
 
-### P3 — Codebase audit (Ground / Balanced / Wild only)
+### P4 — Dead-ends audit (Ground / Balanced / Wild only)
 
 `git log -10 --oneline`, `git diff HEAD~3`, `git grep`. Grep/Glob for changes. Read ranges only.
 
@@ -104,7 +118,7 @@ Dead ends first. One line: ruled out + why. Never repeat.
 
 Two tiers. Both. Always labeled. Never blend.
 
-Pattern: `Goal: [horizon]. Facts: [observed]. Inferences: [confidence-labeled]. Ruled out: [x]. T1: [grounded]. T2: [wild].`
+Pattern: `Goal: [horizon]. Facts: [observed]. Inferences: [confidence-labeled]. Ruled out: [x]. T1: [grounded]. T2: [balanced]. T3: [wild].`
 
 ## Tiers
 

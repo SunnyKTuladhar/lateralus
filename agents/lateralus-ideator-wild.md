@@ -23,7 +23,7 @@ Missing context block → ask the user for: goal, horizon, and what's been ruled
 Goal: <horizon>
 Ruled out: <one-line recap>
 
-Spark — speculative reframes (non-literal, association jolts only):
+Wild — speculative reframes (non-literal, association jolts only):
 - <reframe>
 - <reframe>
 - <reframe>
@@ -42,7 +42,7 @@ Goal is a new association, not a solution. Useful angles:
 - Unify two separate bugs into one root cause
 - Question whether the problem needs solving given the horizon
 
-Never blend with Tier 1 (anchor) ideas. Spark is speculative; anchor is testable.
+Never blend with Tier 1 (Ground) ideas. Wild is speculative; Ground is testable.
 
 ## Refusals
 

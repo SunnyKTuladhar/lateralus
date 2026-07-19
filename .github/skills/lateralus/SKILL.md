@@ -10,9 +10,25 @@ Understand the goal first. Break tunnel vision. Generate from outside the failed
 
 ## Step 0 — Interrogate before ideating (always first, no exceptions)
 
-### Phase 1 — Present options and ask the user to choose
+### Phase 1 — Read the codebase (before asking anything)
 
-**Open with this every time:**
+**Do this silently before presenting options to the user:**
+
+1. Check for `CLAUDE.md` (or `AGENTS.md`, `GEMINI.md`) at the repo root — read it fully if present. It contains architecture, conventions, build commands, and maintainer instructions that shape every question and hypothesis.
+2. If no `CLAUDE.md`, do a quick orientation scan:
+   - Detect language/framework from `go.mod`, `package.json`, `requirements.txt`, `Cargo.toml`, `pom.xml`, etc.
+   - Read `README.md` (first 60 lines) for architecture context.
+   - Run `git log -10 --oneline` to see recent changes.
+   - Glob for key config files (`docker-compose.yml`, `k8s/`, `.env.example`, `Makefile`).
+3. Note anything that will make questions more specific — deployment model, service boundaries, observability stack, recent commits near the failure.
+
+If no codebase is accessible (user pasted a scenario) → skip to Phase 2 immediately.
+
+---
+
+### Phase 2 — Present options and ask the user to choose
+
+**Open with this every time (after Phase 1):**
 
 ```
 I can help in four ways — which fits your situation?
@@ -25,19 +41,24 @@ I can help in four ways — which fits your situation?
 Pick a number, or describe your situation and I'll route you.
 ```
 
+If Phase 1 found useful context → briefly surface it before the menu (e.g., "I can see this is a Go service on Kubernetes with Prometheus — that shapes the hypotheses.").
 If the user describes their situation instead of picking → infer the best fit and confirm before proceeding.
 User distressed or deadline-pressured → suggest [4] first.
 
 ---
 
-### Phase 2 — Ask tailored questions based on choice
+### Phase 3 — Ask tailored questions based on choice
 
 **[1] Ground — questions to ask:**
 ```
 1. What have you already tried, and why did each attempt fail?
 2. Which component or layer does the failure appear in?
-3. What can't change? (libs, APIs, time box, compat constraints)
-4. How will you verify a fix works? (test, observable output, metric)
+3. What observability do you have? (profiler, APM, logs, metrics, tracing)
+4. What does your current monitoring actually show — beyond the headline symptom?
+5. When exactly did the symptom start, and does it correlate with a specific recent change?
+6. Have you collected any profiling data yet? (heap dump, flame graph, query plans, etc.)
+7. What can't change? (libs, APIs, time box, compat constraints)
+8. How will you verify a fix works? (test, observable output, metric)
 ```
 
 **[2] Balanced — questions to ask:**
@@ -67,7 +88,7 @@ Cold user → one question per message. Engaged user → batch all questions for
 
 ---
 
-### Phase 3 — Codebase audit (Ground / Balanced / Wild paths only)
+### Phase 4 — Dead-ends audit (Ground / Balanced / Wild paths only)
 
 Locate what was tried. Build the dead-ends list. Stop there.
 
@@ -120,7 +141,7 @@ State dead ends first — one line, what's ruled out and why. Never repeat a rul
 
 Always output both tiers, always labeled, never blended.
 
-Pattern: `Goal: [horizon]. Facts: [observed]. Inferences: [confidence-labeled]. Ruled out: [x]. Tier 1: [grounded]. Tier 2: [wild].`
+Pattern: `Goal: [horizon]. Facts: [observed]. Inferences: [confidence-labeled]. Ruled out: [x]. Tier 1: [grounded]. Tier 2: [balanced]. Tier 3: [wild].`
 
 ## Tiers
 

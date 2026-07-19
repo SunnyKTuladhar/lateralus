@@ -58,7 +58,7 @@ The skill auto-routes to the right agents after the interrogation step. You can 
 ```
 skills/lateralus/          source-of-truth skill
 skills/lateralus-caveman/  compressed variant
-agents/                    five subagents
+agents/                    four subagents
 .github/skills/            Copilot-discoverable mirrors
 .claude-plugin/            Claude Code plugin manifest
 ```
