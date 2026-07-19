@@ -3,24 +3,97 @@ name: lateralus
 description: "Lateral-thinking escape hatch for stalled debugging. Surfaces the user's end goal and solution horizon (long-term, MVP, POC, workaround), then generates goal-appropriate alternatives in two tiers. Use only after normal debugging has genuinely stalled."
 argument-hint: "What was tried, what failed, current error, end goal"
 user-invocable: true
+license: MIT
 ---
 
 Understand the goal first. Break tunnel vision. Generate from outside the failed approach.
 
-## Step 0 — Goal context (always first)
+## Step 0 — Interrogate before ideating (always first, no exceptions)
 
-Before ideating, establish:
-- **Horizon**: long-term / MVP / POC / test / just-unblock
-- **Constraints**: what can't change
-- **Success signal**: how will the user know it's fixed
+### Phase 1 — Present options and ask the user to choose
 
-| Horizon | Route |
-| --- | --- |
-| Long-term / production | Tier 1 + Tier 2, correctness and maintainability first |
-| MVP | Tier 1 + Tier 2, flag tech debt explicitly |
-| POC / test | Tier 1 acceptable alone; flag if production fix differs |
-| Just unblock / demo | Skip tiers — spawn `lateralus-workaround` |
-| Unknown | Spawn `lateralus-questioner` before ideating |
+**Open with this every time:**
+
+```
+I can help in four ways — which fits your situation?
+
+  [1] Tier 1 · Ground    — concrete, testable hypotheses outside the obvious layer
+  [2] Tier 2 · Balanced  — question assumptions while staying loosely verifiable
+  [3] Tier 3 · Wild      — speculative reframes to break tunnel vision entirely
+  [4] Workaround         — bypass the problem now, fix it properly later
+
+Pick a number, or describe your situation and I'll route you.
+```
+
+If the user describes their situation instead of picking → infer the best fit and confirm before proceeding.
+User distressed or deadline-pressured → suggest [4] first.
+
+---
+
+### Phase 2 — Ask tailored questions based on choice
+
+**[1] Ground — questions to ask:**
+```
+1. What have you already tried, and why did each attempt fail?
+2. Which component or layer does the failure appear in?
+3. What can't change? (libs, APIs, time box, compat constraints)
+4. How will you verify a fix works? (test, observable output, metric)
+```
+
+**[2] Balanced — questions to ask:**
+```
+1. What have you already tried?
+2. What have you assumed is fine — but never actually checked?
+3. Long-term fix, MVP, POC, or test? (shapes how deep to go)
+4. How will you know it's fixed?
+```
+
+**[3] Wild — questions to ask:**
+```
+1. What have you assumed is definitely NOT the problem?
+2. Where does the error appear vs. where you think it actually originates?
+3. If you couldn't touch the failing component at all, what would you do?
+4. What would solving this with data (not code) look like?
+```
+
+**[4] Workaround — questions to ask:**
+```
+1. What specifically is blocking you right now?
+2. How long does the bypass need to last?
+3. What breaks or accumulates as debt if it stays in?
+```
+
+Cold user → one question per message. Engaged user → batch all questions for the chosen path.
+
+---
+
+### Phase 3 — Codebase audit (Ground / Balanced / Wild paths only)
+
+Locate what was tried. Build the dead-ends list. Stop there.
+
+Use `git log -10 --oneline`, `git diff HEAD~3`, `git grep` for history. Grep/Glob for recent changes. Read specific file ranges only — never full files.
+
+No prior fix attempt found → `No stall yet. Use normal debugging first.`
+Data-loss risk found in history → state it in plain English before the dead-ends table.
+
+---
+
+### Context block output (before any ideation)
+
+```
+Choice: Ground | Balanced | Wild | Workaround
+Goal: <one line>
+Horizon: long-term | MVP | POC | test | workaround
+Constraints: <list>
+Unverified assumptions: <list>
+Success signal: <one line>
+Ruled out:
+- <area> — <attempted fix> — <why it failed>
+Still unknown:
+- <open question>
+```
+
+Route directly to the chosen agent after this block is complete.
 
 ## When
 
@@ -33,18 +106,29 @@ Not on first attempt. Straight-line reasoning first.
 
 ## Rules
 
+**Confidence calibration — always separate these three layers before ideating:**
+
+| Layer | What it is | How to label it |
+| --- | --- | --- |
+| **Facts** | What logs, metrics, and traces literally show | State as-is — no hedging needed |
+| **Inferences** | Conclusions well-supported by the facts | Label: *high-confidence* or *medium-confidence* |
+| **Speculation** | Possible explanations not yet verified by evidence | Label: *unverified hypothesis* |
+
+Never present an inference or speculation as a fact. If a conclusion can't be traced back to an observed signal, it must be labeled.
+
 State dead ends first — one line, what's ruled out and why. Never repeat a ruled-out idea.
 
 Always output both tiers, always labeled, never blended.
 
-Pattern: `Goal: [horizon]. Ruled out: [x]. Tier 1: [grounded]. Tier 2: [wild].`
+Pattern: `Goal: [horizon]. Facts: [observed]. Inferences: [confidence-labeled]. Ruled out: [x]. Tier 1: [grounded]. Tier 2: [wild].`
 
 ## Tiers
 
-| Tier | What | Length |
-| --- | --- | --- |
-| Tier 1 — Unlikely but plausible | 3-5 concrete testable causes outside the obvious category. Cache, encoding, timezone, race, stale build, dep drift, inverted baseline, adjacent component. Depth calibrated to horizon. | One line naming it + one line on how to test it. |
-| Tier 2 — Wild reframes | 3-5 speculative reframes. Not literal fixes — state this up front. Goal: jolt a new association. Question an ignored premise, solve with data not code, distrust error location, unify two bugs, question whether the problem needs solving given horizon. | 1-2 sentences each. Don't over-justify. |
+| Tier | Agent | What | Length |
+| --- | --- | --- | --- |
+| Tier 1 — Ground | `lateralus-ideator-ground` | 3-5 concrete testable causes outside the obvious category. Cache, encoding, timezone, race, stale build, dep drift, inverted baseline, adjacent component. Depth calibrated to horizon. | One line naming it + one line on how to test it. |
+| Tier 2 — Balanced | `lateralus-ideator-balanced` | 3-5 hypotheses that question assumptions while staying loosely testable. Bridge between grounded and speculative. | Hypothesis + assumption challenged + loose test signal. |
+| Tier 3 — Wild | `lateralus-ideator-wild` | 3-5 speculative reframes. Not literal fixes — state this up front. Goal: jolt a new association. Question an ignored premise, solve with data not code, distrust error location, unify two bugs, question whether the problem needs solving given horizon. | 1-2 sentences each. Don't over-justify. |
 
 ## Boundaries
 

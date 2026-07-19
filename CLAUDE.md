@@ -28,10 +28,9 @@ lateralus/
 │   └── lateralus-caveman/SKILL.md    # Caveman-compressed variant
 │
 ├── agents/                           # Subagents — single source of truth
-│   ├── lateralus-investigator.md     # Audits dead ends
-│   ├── lateralus-questioner.md       # Surfaces goal and horizon
-│   ├── lateralus-ideator.md          # Generates Tier 1 + Tier 2 ideas
-│   ├── lateralus-verifier.md         # Tests one hypothesis
+│   ├── lateralus-ideator-ground.md   # Generates Tier 1 grounded hypotheses
+│   ├── lateralus-ideator-balanced.md # Generates middle-ground hypotheses
+│   ├── lateralus-ideator-wild.md     # Generates Tier 2 wild reframes
 │   └── lateralus-workaround.md       # Makeshift bypasses with debt log
 │
 ├── .claude-plugin/                   # Claude Code plugin manifest
@@ -54,10 +53,10 @@ lateralus/
 |---|---|
 | Core skill behavior (tiers, horizon routing, rules) | `skills/lateralus/SKILL.md` |
 | Caveman-compressed variant | `skills/lateralus-caveman/SKILL.md` |
-| Dead-end auditing behavior | `agents/lateralus-investigator.md` |
-| Question interview flow | `agents/lateralus-questioner.md` |
-| Idea generation rules | `agents/lateralus-ideator.md` |
-| Hypothesis verification behavior | `agents/lateralus-verifier.md` |
+| Scout (interview + audit) | Built into `skills/lateralus/SKILL.md` Step 0 |
+| Tier 1 grounded hypotheses | `agents/lateralus-ideator-ground.md` |
+| Middle-ground hypotheses | `agents/lateralus-ideator-balanced.md` |
+| Tier 2 wild reframes | `agents/lateralus-ideator-wild.md` |
 | Makeshift bypass rules | `agents/lateralus-workaround.md` |
 | Plugin metadata | `.claude-plugin/plugin.json` |
 | Marketplace listing | `.claude-plugin/marketplace.json` |
@@ -99,20 +98,22 @@ Don't merge them. Different audiences, different formats.
 
 ## Agent system
 
-Five subagents covering the full lateralus workflow:
+Four subagents covering the full lateralus workflow:
 
 | Stage | Agent | Model |
 |---|---|---|
-| 1. Audit | `lateralus-investigator` | haiku |
-| 2. Interview | `lateralus-questioner` | sonnet |
-| 3. Ideate | `lateralus-ideator` | sonnet |
-| 4. Verify | `lateralus-verifier` | sonnet |
-| 5. Bypass | `lateralus-workaround` | sonnet |
+| 1. Ground | `lateralus-ideator-ground` | sonnet |
+| 2. Balanced | `lateralus-ideator-balanced` | sonnet |
+| 3. Wild | `lateralus-ideator-wild` | sonnet |
+| 4. Bypass | `lateralus-workaround` | sonnet |
 
-Horizon routing determines which agents fire:
-- Unknown horizon → questioner first
+Interrogation (interview + codebase audit) is built into the skill itself as Step 0.
+
+Horizon routing (after Step 0 produces the context block):
 - Just unblock / demo → workaround directly
-- Long-term / MVP → investigator → ideator → verifier
+- Long-term / MVP → ideator-ground + ideator-wild (parallel)
+- POC / test → ideator-ground only
+- Time-pressured → ideator-balanced only
 
 ---
 

@@ -28,30 +28,30 @@ See [INSTALL.md](./INSTALL.md) for Copilot, manual, and per-directory options.
 1. First establishes your **goal and horizon** — long-term fix, MVP, POC, or just need to unblock now.
 2. Routes accordingly:
    - **Just unblock / demo** → makeshift bypasses with explicit debt logging
-   - **Unknown horizon** → asks targeted questions first
-   - **Long-term / MVP** → two-tier lateral ideation
-3. Generates **Tier 1** (plausible, testable alternatives) and **Tier 2** (wild reframes to break tunnel vision).
+   - **Long-term / MVP** → Tier 1 + Tier 3 ideation (parallel)
+   - **Time-pressured / single pass** → Tier 2 balanced ideation
+   - **POC / test** → Tier 1 only
+3. Generates testable hypotheses and/or wild reframes depending on horizon.
 
 Only triggers after normal debugging has genuinely stalled — not on first attempt.
 
 ## Commands
 
-| Command | What |
+| Command | Use when |
 |---|---|
-| `/lateralus` | Full skill — goal context + two-tier ideation |
-| `/lateralus-caveman` | Same, 60% fewer tokens |
-
-Natural language: `"still broken"`, `"same error"`, `"tried that already"`, `"going in circles"`
+| `/lateralus` | Default — full analysis, maximum detail |
+| `/lateralus-caveman` | Context window is nearly full, or you want faster/cheaper responses (~60% fewer tokens) |
 
 ## Agents
 
-| Agent | What |
-|---|---|
-| `lateralus-questioner` | Asks 5 questions to surface goal, horizon, constraints |
-| `lateralus-investigator` | Audits what was tried and builds the dead-ends list |
-| `lateralus-ideator` | Generates Tier 1 + Tier 2 ideas filtered by horizon |
-| `lateralus-verifier` | Tests one chosen hypothesis with a minimal probe |
-| `lateralus-workaround` | Makeshift bypasses with debt logging |
+The skill auto-routes to the right agents after the interrogation step. You can also invoke agents directly as a shortcut if you already know what you need.
+
+| Agent | Tier | Use directly when… |
+|---|---|---|
+| `lateralus-ideator-ground` | Tier 1 | You want concrete, testable hypotheses — paste your context block and go |
+| `lateralus-ideator-balanced` | Tier 2 | You want assumption-questioning ideas that are still loosely verifiable |
+| `lateralus-ideator-wild` | Tier 3 | You want speculative reframes to break tunnel vision |
+| `lateralus-workaround` | — | You just need to unblock now, root cause can wait |
 
 ## Repository layout
 

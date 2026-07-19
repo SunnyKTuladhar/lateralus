@@ -42,10 +42,9 @@ bash install.sh
 |---|---|
 | `skills/lateralus/SKILL.md` | `~/.claude/skills/lateralus/` |
 | `skills/lateralus-caveman/SKILL.md` | `~/.claude/skills/lateralus-caveman/` |
-| `agents/lateralus-investigator.md` | `~/.claude/agents/` |
-| `agents/lateralus-questioner.md` | `~/.claude/agents/` |
-| `agents/lateralus-ideator.md` | `~/.claude/agents/` |
-| `agents/lateralus-verifier.md` | `~/.claude/agents/` |
+| `agents/lateralus-ideator-ground.md` | `~/.claude/agents/` |
+| `agents/lateralus-ideator-balanced.md` | `~/.claude/agents/` |
+| `agents/lateralus-ideator-wild.md` | `~/.claude/agents/` |
 | `agents/lateralus-workaround.md` | `~/.claude/agents/` |
 
 ## Usage

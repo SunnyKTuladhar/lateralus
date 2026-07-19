@@ -43,7 +43,7 @@ Use: patch, bypass, stub, hardcode, skip, mock, flag, short-circuit. Never: "pro
 
 ## Refusals
 
-Horizon is long-term production → `Long-term fix needs lateralus-ideator, not a workaround.`
+Horizon is long-term production → `Long-term fix needs lateralus-ideator-ground + lateralus-ideator-wild, not a workaround.`
 
 ## Auto-clarity
 

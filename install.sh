@@ -21,10 +21,9 @@ SKILLS=(
   "skills/lateralus-caveman/SKILL.md"
 )
 AGENTS=(
-  "agents/lateralus-investigator.md"
-  "agents/lateralus-questioner.md"
-  "agents/lateralus-ideator.md"
-  "agents/lateralus-verifier.md"
+  "agents/lateralus-ideator-ground.md"
+  "agents/lateralus-ideator-balanced.md"
+  "agents/lateralus-ideator-wild.md"
   "agents/lateralus-workaround.md"
 )
 
