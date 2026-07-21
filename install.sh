@@ -95,7 +95,7 @@ already = any(
 )
 if not already:
     post.append({
-        "matcher": "",
+        "matcher": "Edit|Write|Create|MultiEdit|NotebookEditCell|Bash",
         "hooks": [{"type": "command", "command": hook_cmd}]
     })
 

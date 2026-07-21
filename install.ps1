@@ -80,7 +80,7 @@ $alreadyWired = $cfg["hooks"]["PostToolUse"] | ForEach-Object {
 
 if (-not $alreadyWired) {
   $cfg["hooks"]["PostToolUse"] += @{
-    matcher = ""
+    matcher = "Edit|Write|Create|MultiEdit|NotebookEditCell|Bash"
     hooks   = @(@{ type = "command"; command = $HookCmd })
   }
 }

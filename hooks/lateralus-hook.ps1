@@ -19,15 +19,20 @@ $ErrorActionPreference = "Stop"
 $Threshold = if ($env:LATERALUS_THRESHOLD) { [int]$env:LATERALUS_THRESHOLD } else { 2 }
 $ClaudeDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $HOME ".claude" }
 $StateFile = Join-Path $ClaudeDir "lateralus-state.json"
+$SessionTtlHours = 24  # prune sessions not seen within this window
 
 $EditTools = @("Edit", "Write", "Create", "MultiEdit", "NotebookEditCell")
 $BashTools  = @("Bash")
+# Known limitation: failures via MCP or custom lint tools are not tracked.
 
 # ── Signature normalization ────────────────────────────────────────────────────
 
 function Get-Signature([string]$Text) {
-    # Keep first 20 lines
-    $lines = ($Text -split "`n")[0..19] -join "`n"
+    # Use last 30 lines, not first 20.
+    # JVM/PySpark/Py4J tracebacks bury the real exception at the bottom.
+    $lines = ($Text -split "`n")
+    $lines = if ($lines.Count -gt 30) { $lines[-30..-1] } else { $lines }
+    $lines = $lines -join "`n"
 
     # Line numbers
     $lines = $lines -replace ':\d+:', ':N:'
@@ -73,8 +78,25 @@ function Get-State {
 }
 
 function Save-State($State) {
+    # Prune sessions not active in the last $SessionTtlHours to keep the file bounded.
+    $cutoff = (Get-Date).ToUniversalTime().AddHours(-$SessionTtlHours)
+    $pruned = @{}
+    foreach ($sid in $State.Keys) {
+        $sdata = $State[$sid]
+        $sigs  = if ($sdata.ContainsKey("signatures")) { $sdata["signatures"] } else { @{} }
+        $keep  = $false
+        foreach ($sd in $sigs.Values) {
+            if ($sd["last_seen"]) {
+                try {
+                    $ts = [datetime]::Parse($sd["last_seen"]).ToUniversalTime()
+                    if ($ts -gt $cutoff) { $keep = $true; break }
+                } catch {}
+            }
+        }
+        if ($keep -or $sigs.Count -eq 0) { $pruned[$sid] = $sdata }
+    }
     $null = New-Item -ItemType Directory -Force -Path $ClaudeDir
-    $State | ConvertTo-Json -Depth 10 | Set-Content $StateFile -Encoding UTF8
+    $pruned | ConvertTo-Json -Depth 10 | Set-Content $StateFile -Encoding UTF8
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -132,10 +154,26 @@ if (-not $Sigs.ContainsKey($Sig)) {
 }
 $SigData = $Sigs[$Sig]
 
-if ($SigData["count"] -eq 0 -or $SigData["edit_since_last"]) {
-    $SigData["count"]           += 1
-    $SigData["edit_since_last"]  = $false
-    $SigData["last_seen"]        = (Get-Date).ToUniversalTime().ToString("o")
+$Now     = (Get-Date).ToUniversalTime()
+$Cutoff  = $Now.AddHours(-$SessionTtlHours)
+
+$LastSeen = $null
+try {
+    if ($SigData["last_seen"]) {
+        $LastSeen = [datetime]::Parse($SigData["last_seen"]).ToUniversalTime()
+    }
+} catch {}
+
+$Stale = $LastSeen -and ($LastSeen -lt $Cutoff)
+
+if ($SigData["count"] -eq 0 -or $SigData["edit_since_last"] -or $Stale) {
+    if ($Stale) {
+        $SigData["count"] = 1  # reset — different stall window
+    } else {
+        $SigData["count"] += 1
+    }
+    $SigData["edit_since_last"] = $false
+    $SigData["last_seen"]       = $Now.ToString("o")
 }
 
 $Count = $SigData["count"]

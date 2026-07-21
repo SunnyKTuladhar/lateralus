@@ -29,7 +29,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 # ── Config ────────────────────────────────────────────────────────────────────
@@ -37,9 +37,11 @@ from pathlib import Path
 THRESHOLD = int(os.environ.get("LATERALUS_THRESHOLD", "2"))
 CLAUDE_DIR = Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude"))
 STATE_FILE = CLAUDE_DIR / "lateralus-state.json"
+SESSION_TTL_HOURS = 24  # prune sessions not seen in this window
 
 EDIT_TOOLS = {"Edit", "Write", "Create", "MultiEdit", "NotebookEditCell"}
 BASH_TOOLS = {"Bash"}
+# Known limitation: failures surfaced via MCP or custom lint tools are not tracked.
 
 # ── Signature normalization ───────────────────────────────────────────────────
 
@@ -53,9 +55,11 @@ def normalize(text: str) -> str:
 
     Tune the strip rules here if the hook over- or under-triggers.
     """
-    # Keep first 20 lines — ignore noisy tail output
-    lines = text.strip().splitlines()[:20]
-    text = "\n".join(lines)
+    # Use last 30 lines, not first 20.
+    # JVM / PySpark / Py4J tracebacks bury the real exception at the bottom;
+    # the first 20 lines are often identical boilerplate for different root causes.
+    lines = text.strip().splitlines()
+    text = "\n".join(lines[-30:])
 
     # Line numbers: :42:  line 42  L42  #42
     text = re.sub(r":\d+:", ":N:", text)
@@ -101,8 +105,28 @@ def load_state() -> dict:
 
 
 def save_state(state: dict) -> None:
+    # Prune sessions not active in the last SESSION_TTL_HOURS to keep the file bounded.
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=SESSION_TTL_HOURS)
+    pruned = {}
+    for sid, sdata in state.items():
+        sigs = sdata.get("signatures", {})
+        # Keep session if any signature was seen recently
+        keep = any(
+            _parse_ts(sd.get("last_seen")) > cutoff
+            for sd in sigs.values()
+            if sd.get("last_seen")
+        )
+        if keep or not sigs:
+            pruned[sid] = sdata
     STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    STATE_FILE.write_text(json.dumps(state, indent=2))
+    STATE_FILE.write_text(json.dumps(pruned, indent=2))
+
+
+def _parse_ts(ts: str) -> datetime:
+    try:
+        return datetime.fromisoformat(ts).replace(tzinfo=timezone.utc)
+    except Exception:
+        return datetime.min.replace(tzinfo=timezone.utc)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -156,10 +180,18 @@ def main() -> None:
 
     # Only increment when a real edit happened since the last failure.
     # First occurrence always counts (seeds the counter).
-    if sig_data["count"] == 0 or sig_data["edit_since_last"]:
-        sig_data["count"] += 1
+    # If the signature last fired > SESSION_TTL_HOURS ago, treat as a new stall.
+    now = datetime.now(timezone.utc)
+    last_seen = _parse_ts(sig_data.get("last_seen", ""))
+    stale = (now - last_seen) > timedelta(hours=SESSION_TTL_HOURS)
+
+    if sig_data["count"] == 0 or sig_data["edit_since_last"] or stale:
+        if stale:
+            sig_data["count"] = 1  # reset — different stall window
+        else:
+            sig_data["count"] += 1
         sig_data["edit_since_last"] = False
-        sig_data["last_seen"] = datetime.utcnow().isoformat()
+        sig_data["last_seen"] = now.isoformat()
 
     count = sig_data["count"]
     save_state(state)
