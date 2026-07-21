@@ -6,6 +6,11 @@ Understands your end goal (long-term fix, MVP, POC, workaround) and generates go
 
 ## Install
 
+**GitHub Copilot (gh CLI)**
+```bash
+gh skill install SunnyKTuladhar/lateralus
+```
+
 **macOS / Linux / WSL**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/install.sh | bash
