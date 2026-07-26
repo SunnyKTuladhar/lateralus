@@ -97,10 +97,14 @@ function Save-State($State) {
                 } catch {}
             }
         }
-        if ($keep -or $sigs.Count -eq 0) { $pruned[$sid] = $sdata }
+        # Only keep sessions with active signatures seen recently.
+        # Cleared sessions (sigs.Count -eq 0) are dropped to avoid unbounded growth.
+        if ($keep) { $pruned[$sid] = $sdata }
     }
-    $null = New-Item -ItemType Directory -Force -Path $ClaudeDir
-    $pruned | ConvertTo-Json -Depth 10 | Set-Content $StateFile -Encoding UTF8
+    try {
+        $null = New-Item -ItemType Directory -Force -Path $ClaudeDir
+        $pruned | ConvertTo-Json -Depth 10 | Set-Content $StateFile -Encoding UTF8
+    } catch {}  # non-fatal; write errors should not disrupt tool flow
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────

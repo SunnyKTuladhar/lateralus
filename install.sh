@@ -83,7 +83,7 @@ if settings_file.exists():
     except Exception:
         print(f"  ! Could not parse {settings_file} — skipping hook wiring.", file=sys.stderr)
         print(f"    Wire the hook manually: https://github.com/SunnyKTuladhar/lateralus#manual-hook-wiring", file=sys.stderr)
-        sys.exit(0)
+        sys.exit(1)
 
 hooks = settings.setdefault("hooks", {})
 post  = hooks.setdefault("PostToolUse", [])
@@ -109,9 +109,13 @@ settings_file.parent.mkdir(parents=True, exist_ok=True)
 if settings_file.exists():
     shutil.copy2(settings_file, str(settings_file) + ".bak")
 settings_file.write_text(json.dumps(settings, indent=2))
+print(f"  ✓ hook wired in: {settings_file}")
 PYEOF
 
-echo "  ✓ hook wired in: ${SETTINGS}"
+# Success message now printed by the python script above; only print it if wiring ran
+if [ $? -ne 0 ]; then
+  echo "  ! Hook wiring skipped — see above."
+fi
 echo ""
 echo "Done. Open Claude Code and type /lateralus to use."
 echo "For workarounds: /lateralus-workaround"

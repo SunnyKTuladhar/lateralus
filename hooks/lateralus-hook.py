@@ -122,10 +122,16 @@ def save_state(state: dict) -> None:
             for sd in sigs.values()
             if sd.get("last_seen")
         )
-        if keep or not sigs:
+        # Only keep sessions with active (non-empty) signatures seen recently.
+        # Sessions cleared by a successful Bash run (sigs == {}) are dropped — they
+        # have no useful state and would accumulate indefinitely otherwise.
+        if keep:
             pruned[sid] = sdata
-    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    STATE_FILE.write_text(json.dumps(pruned, indent=2))
+    try:
+        STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        STATE_FILE.write_text(json.dumps(pruned, indent=2))
+    except Exception:
+        pass  # non-fatal; stale state is harmless, write errors should not disrupt tool flow
 
 
 def _parse_ts(ts: str) -> datetime:
