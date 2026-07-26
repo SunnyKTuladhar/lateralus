@@ -66,7 +66,7 @@ it nudges you to invoke `/lateralus` before making another fix attempt.
 
 ---
 
-### `/lateralus-brainstorm` — planning new work
+### `/lateralus-brainstorm` — planning your next work
 
 Invoke directly:
 
