@@ -25,7 +25,8 @@ lateralus/
 │
 ├── skills/                           # ALL skills — single source of truth
 │   ├── lateralus/{SKILL.md, README.md}
-│   └── lateralus-caveman/SKILL.md    # Caveman-compressed variant
+│   ├── lateralus-caveman/SKILL.md    # Caveman-compressed variant
+│   └── lateralus-brainstorm/SKILL.md # Brainstorming / plan-mode skill
 │
 ├── agents/                           # Subagents — single source of truth
 │   ├── lateralus-ideator-ground.md   # Generates Tier 1 grounded hypotheses
@@ -80,12 +81,13 @@ After merging a skill change, wait for the workflow before declaring the release
 
 ## Skill system
 
-Two skills ship from this repo:
+Three skills ship from this repo:
 
 | Skill | File | Purpose |
 |---|---|---|
 | `lateralus` | `skills/lateralus/SKILL.md` | Full skill — goal context + two-tier ideation |
 | `lateralus-caveman` | `skills/lateralus-caveman/SKILL.md` | Same behavior, ~60% fewer tokens |
+| `lateralus-brainstorm` | `skills/lateralus-brainstorm/SKILL.md` | Brainstorming / plan mode — Grounded, Balanced, Wild idea generation |
 
 Each skill has:
 - A `SKILL.md` (LLM-facing prompt body — what the agent loads)
