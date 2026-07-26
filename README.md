@@ -43,6 +43,73 @@ Only triggers after normal debugging has genuinely stalled — not on first atte
 | `/lateralus-caveman` | Context window is nearly full, or you want faster/cheaper responses (~60% fewer tokens) |
 | `/lateralus-brainstorm` | Planning new work — Grounded, Balanced, or Wild idea generation. Also activates in plan mode. |
 
+## Usage examples
+
+### `/lateralus` — debugging stalled
+
+```
+> I've tried three different approaches to fix this memory leak and none of them worked.
+  The heap keeps growing after every request cycle.
+
+/lateralus
+```
+
+```
+> same error again after my last edit. going in circles.
+
+/lateralus
+```
+
+The hook also fires automatically — if the same failure signature recurs after edit attempts,
+it nudges you to invoke `/lateralus` before making another fix attempt.
+
+---
+
+### `/lateralus-brainstorm` — planning new work
+
+Invoke directly:
+
+```
+> /lateralus-brainstorm I want to add real-time notifications to the app
+```
+
+Or just describe what you're planning — the skill activates automatically in plan mode:
+
+```
+> let's brainstorm how to handle auth for the new API
+```
+
+```
+> thinking through the data model for multi-tenancy
+```
+
+```
+> what are our options for caching here?
+```
+
+After reading your codebase context, it presents three modes to pick from:
+
+- **Grounded** — practical ideas you could ship soon, within current constraints
+- **Balanced** — ideas that question some assumptions but stay loosely feasible  
+- **Wild** — constraint-free, blue-sky, no wrong answers
+
+---
+
+### Direct agent invocation (shortcut)
+
+Skip the interrogation step if you already have a context block:
+
+```
+> @lateralus-ideator-wild
+  Goal: replace our polling mechanism. Horizon: long-term.
+  Ruled out: WebSockets (infra constraint), SSE (proxy strips headers).
+```
+
+```
+> @lateralus-workaround
+  Blocking: auth service is down in staging, need to demo in 2 hours.
+```
+
 ## Agents
 
 The skill auto-routes to the right agents after the interrogation step. You can also invoke agents directly as a shortcut if you already know what you need.
