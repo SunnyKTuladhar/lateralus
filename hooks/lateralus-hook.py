@@ -24,6 +24,8 @@ Too many false positives → tighten the strip regexes.
 Too many misses → loosen them or lower the threshold.
 """
 
+from __future__ import annotations
+
 import hashlib
 import json
 import os

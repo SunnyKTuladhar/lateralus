@@ -79,8 +79,8 @@ foreach ($h in $Hooks) {
 $Settings = Join-Path $ClaudeDir "settings.json"
 $PwshCmd  = Get-Command pwsh -ErrorAction SilentlyContinue
 
-if (-not $PwshCmd) {
-    Write-Host "  ! pwsh (PowerShell 6+) not found — skipping hook wiring."
+if (-not $PwshCmd -or $PSVersionTable.PSVersion.Major -lt 6) {
+    Write-Host "  ! PowerShell 6+ (pwsh) required for hook wiring — skipping."
     Write-Host "    Install pwsh and re-run, or wire the hook manually:"
     Write-Host "    https://github.com/SunnyKTuladhar/lateralus#manual-hook-wiring"
 } else {

@@ -76,7 +76,7 @@ done
 SETTINGS="${CLAUDE_DIR}/settings.json"
 HOOK_CMD="python3 \"${CLAUDE_DIR}/hooks/lateralus-hook.py\""
 
-python3 - "$SETTINGS" "$HOOK_CMD" <<'PYEOF'
+python3 - "$SETTINGS" "$HOOK_CMD" <<'PYEOF' || echo "  ! Hook wiring skipped — see above."
 import sys, json, shutil
 from pathlib import Path
 
@@ -121,10 +121,6 @@ settings_file.write_text(json.dumps(settings, indent=2))
 print(f"  ✓ hook wired in: {settings_file}")
 PYEOF
 
-# Success message now printed by the python script above; only print it if wiring ran
-if [ $? -ne 0 ]; then
-  echo "  ! Hook wiring skipped — see above."
-fi
 echo ""
 echo "Done. Open Claude Code and type /lateralus to use."
 echo "For workarounds: /lateralus-workaround"
