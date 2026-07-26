@@ -63,31 +63,54 @@ foreach ($h in $Hooks) {
 }
 
 # Wire hook into ~/.claude/settings.json (idempotent)
+# Requires pwsh (PowerShell 6+) for -AsHashtable support — skips gracefully if unavailable
 $Settings = Join-Path $ClaudeDir "settings.json"
-$HookCmd  = "pwsh -NonInteractive -File `"$(Join-Path $ClaudeDir 'hooks\lateralus-hook.ps1')`""
+$PwshCmd  = Get-Command pwsh -ErrorAction SilentlyContinue
 
-$cfg = if (Test-Path $Settings) {
-  $raw = (Get-Content $Settings -Raw) -replace '(?m)^\s*//.*$', ''
-  try { $raw | ConvertFrom-Json -AsHashtable } catch { @{} }
-} else { @{} }
+if (-not $PwshCmd) {
+    Write-Host "  ! pwsh (PowerShell 6+) not found — skipping hook wiring."
+    Write-Host "    Install pwsh and re-run, or wire the hook manually:"
+    Write-Host "    https://github.com/SunnyKTuladhar/lateralus#manual-hook-wiring"
+} else {
+    $HookCmd = "pwsh -NonInteractive -File `"$(Join-Path $ClaudeDir 'hooks\lateralus-hook.ps1')`""
 
-if (-not $cfg.ContainsKey("hooks"))              { $cfg["hooks"] = @{} }
-if (-not $cfg["hooks"].ContainsKey("PostToolUse")) { $cfg["hooks"]["PostToolUse"] = @() }
+    $cfg = @{}
+    $parseFailed = $false
+    if (Test-Path $Settings) {
+        $raw = (Get-Content $Settings -Raw) -replace '(?m)^\s*//.*$', ''
+        try {
+            $cfg = $raw | ConvertFrom-Json -AsHashtable
+        } catch {
+            $parseFailed = $true
+        }
+    }
 
-$alreadyWired = $cfg["hooks"]["PostToolUse"] | ForEach-Object {
-  $_.hooks | Where-Object { $_.command -eq $HookCmd }
-} | Select-Object -First 1
+    if ($parseFailed) {
+        Write-Host "  ! Could not parse $Settings — skipping hook wiring."
+        Write-Host "    Wire the hook manually: https://github.com/SunnyKTuladhar/lateralus#manual-hook-wiring"
+    } else {
+        if (-not $cfg.ContainsKey("hooks"))                { $cfg["hooks"] = @{} }
+        if (-not $cfg["hooks"].ContainsKey("PostToolUse")) { $cfg["hooks"]["PostToolUse"] = @() }
 
-if (-not $alreadyWired) {
-  $cfg["hooks"]["PostToolUse"] += @{
-    matcher = "Edit|Write|Create|MultiEdit|NotebookEditCell|Bash"
-    hooks   = @(@{ type = "command"; command = $HookCmd })
-  }
+        $alreadyWired = $cfg["hooks"]["PostToolUse"] | ForEach-Object {
+            if ($_ -is [hashtable] -and $_.hooks) {
+                $_.hooks | Where-Object { $_ -is [hashtable] -and $_.command -eq $HookCmd }
+            }
+        } | Select-Object -First 1
+
+        if (-not $alreadyWired) {
+            $cfg["hooks"]["PostToolUse"] += @{
+                matcher = "Edit|Write|Create|MultiEdit|NotebookEditCell|Bash"
+                hooks   = @(@{ type = "command"; command = $HookCmd })
+            }
+        }
+
+        $null = New-Item -ItemType Directory -Force -Path $ClaudeDir
+        if (Test-Path $Settings) { Copy-Item $Settings "$Settings.bak" -Force }
+        $cfg | ConvertTo-Json -Depth 10 | Set-Content $Settings -Encoding UTF8
+        Write-Host "  v hook wired in: $Settings"
+    }
 }
-
-$null = New-Item -ItemType Directory -Force -Path $ClaudeDir
-$cfg | ConvertTo-Json -Depth 10 | Set-Content $Settings -Encoding UTF8
-Write-Host "  v hook wired in: $Settings"
 
 Write-Host ""
 Write-Host "Done. Open Claude Code and type /lateralus to use."

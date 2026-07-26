@@ -33,6 +33,10 @@ lateralus/
 │   ├── lateralus-ideator-wild.md     # Generates Tier 3 wild reframes
 │   └── lateralus-workaround.md       # Makeshift bypasses with debt log
 │
+├── hooks/                            # PostToolUse hook implementations
+│   ├── lateralus-hook.py             # Python hook (macOS / Linux / WSL)
+│   └── lateralus-hook.ps1            # PowerShell hook (Windows, requires pwsh 6+)
+│
 ├── .claude-plugin/                   # Claude Code plugin manifest
 │   ├── plugin.json                   # Plugin metadata and agents array
 │   └── marketplace.json              # Marketplace listing
@@ -58,6 +62,7 @@ lateralus/
 | Middle-ground hypotheses | `agents/lateralus-ideator-balanced.md` |
 | Tier 3 wild reframes | `agents/lateralus-ideator-wild.md` |
 | Makeshift bypass rules | `agents/lateralus-workaround.md` |
+| Hook behavior | `hooks/lateralus-hook.py`, `hooks/lateralus-hook.ps1` |
 | Plugin metadata | `.claude-plugin/plugin.json` |
 | Marketplace listing | `.claude-plugin/marketplace.json` |
 | Install steps | `install.sh`, `install.ps1`, `INSTALL.md` |
@@ -119,17 +124,22 @@ Horizon routing (after Step 0 context block is complete) — user picks from the
 
 ## Install system
 
-Two plain shell scripts — no Node, no JSONC parser, no settings.json merge needed.
-Lateralus has no hooks, so there is nothing to wire into `settings.json`.
+Two plain shell scripts. Both install a `PostToolUse` hook and wire it into `~/.claude/settings.json`.
 
 `install.sh` and `install.ps1`:
 - Copy `skills/lateralus/` and `skills/lateralus-caveman/` to `~/.claude/skills/`
 - Copy all four agent files to `~/.claude/agents/`
+- Copy the hook to `~/.claude/hooks/`
+- Wire the hook into `~/.claude/settings.json` (idempotent; backs up `.bak` before writing)
 - Respect `CLAUDE_CONFIG_DIR` env var
 - Work from curl-pipe or local clone
 - Safe to re-run
 
-If hooks are added in future, a JSONC-tolerant settings.json writer will be needed before the scripts touch `settings.json`.
+Hook notes:
+- `install.sh` requires Python 3 for JSONC-tolerant settings.json merge
+- `install.ps1` requires `pwsh` (PowerShell 6+) for hook wiring; skips gracefully on PS 5.1
+- If `settings.json` can't be parsed, wiring is skipped and the file is never modified
+- A `.bak` copy is written alongside `settings.json` before any write
 
 ---
 

@@ -7,12 +7,12 @@
 curl -fsSL https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/install.sh | bash
 ```
 
-**Windows (PowerShell 5.1+)**
+**Windows (PowerShell 5.1+, hook wiring requires pwsh 6+)**
 ```powershell
 irm https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/install.ps1 | iex
 ```
 
-Copies skills and agents into `~/.claude/skills/` and `~/.claude/agents/`. Safe to re-run.
+Copies skills, agents, and a `PostToolUse` hook into `~/.claude/`. Also wires the hook into `~/.claude/settings.json`. Safe to re-run.
 
 ## Claude Code plugin
 
@@ -46,6 +46,10 @@ bash install.sh
 | `agents/lateralus-ideator-balanced.md` | `~/.claude/agents/` |
 | `agents/lateralus-ideator-wild.md` | `~/.claude/agents/` |
 | `agents/lateralus-workaround.md` | `~/.claude/agents/` |
+| `hooks/lateralus-hook.py` | `~/.claude/hooks/` (macOS/Linux/WSL) |
+| `hooks/lateralus-hook.ps1` | `~/.claude/hooks/` (Windows) |
+
+The hook is also wired into `~/.claude/settings.json` under `hooks.PostToolUse`. A `.bak` copy of `settings.json` is written before any modification. If the file can't be parsed, wiring is skipped and the file is left untouched.
 
 ## Usage
 

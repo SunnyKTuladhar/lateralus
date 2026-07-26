@@ -65,33 +65,39 @@ done
 
 # Wire hook into ~/.claude/settings.json (idempotent)
 SETTINGS="${CLAUDE_DIR}/settings.json"
-HOOK_CMD="python3 ${CLAUDE_DIR}/hooks/lateralus-hook.py"
+HOOK_CMD="python3 \"${CLAUDE_DIR}/hooks/lateralus-hook.py\""
 
 python3 - "$SETTINGS" "$HOOK_CMD" <<'PYEOF'
-import sys, json, os
+import sys, json, shutil
 from pathlib import Path
 
-settings_file = sys.argv[1]
+settings_file = Path(sys.argv[1])
 hook_cmd      = sys.argv[2]
 
-# Load existing settings (strip // comments best-effort)
-if Path(settings_file).exists():
-    raw = Path(settings_file).read_text()
+settings = {}
+if settings_file.exists():
+    raw = settings_file.read_text()
     raw = "\n".join(l for l in raw.splitlines() if not l.strip().startswith("//"))
     try:
         settings = json.loads(raw)
     except Exception:
-        settings = {}
-else:
-    settings = {}
+        print(f"  ! Could not parse {settings_file} — skipping hook wiring.", file=sys.stderr)
+        print(f"    Wire the hook manually: https://github.com/SunnyKTuladhar/lateralus#manual-hook-wiring", file=sys.stderr)
+        sys.exit(0)
 
 hooks = settings.setdefault("hooks", {})
 post  = hooks.setdefault("PostToolUse", [])
+if not isinstance(post, list):
+    post = []
+    hooks["PostToolUse"] = post
 
-# Check if already wired (idempotent)
+# Check if already wired (idempotent) — defensive against non-dict entries
 already = any(
-    any(h.get("command") == hook_cmd for h in entry.get("hooks", []))
+    isinstance(entry, dict) and
+    any(isinstance(h, dict) and h.get("command") == hook_cmd
+        for h in entry.get("hooks", []) if isinstance(h, dict))
     for entry in post
+    if isinstance(entry, dict)
 )
 if not already:
     post.append({
@@ -99,8 +105,10 @@ if not already:
         "hooks": [{"type": "command", "command": hook_cmd}]
     })
 
-Path(settings_file).parent.mkdir(parents=True, exist_ok=True)
-Path(settings_file).write_text(json.dumps(settings, indent=2))
+settings_file.parent.mkdir(parents=True, exist_ok=True)
+if settings_file.exists():
+    shutil.copy2(settings_file, str(settings_file) + ".bak")
+settings_file.write_text(json.dumps(settings, indent=2))
 PYEOF
 
 echo "  ✓ hook wired in: ${SETTINGS}"

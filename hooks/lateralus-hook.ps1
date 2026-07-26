@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+#Requires -Version 6.0
 <#
 .SYNOPSIS
     lateralus PostToolUse hook (Windows / PowerShell).
@@ -16,7 +16,11 @@
 
 $ErrorActionPreference = "Stop"
 
-$Threshold = if ($env:LATERALUS_THRESHOLD) { [int]$env:LATERALUS_THRESHOLD } else { 2 }
+$Threshold = 2
+if ($env:LATERALUS_THRESHOLD) {
+    $parsed = 0
+    if ([int]::TryParse($env:LATERALUS_THRESHOLD, [ref]$parsed)) { $Threshold = $parsed }
+}
 $ClaudeDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $HOME ".claude" }
 $StateFile = Join-Path $ClaudeDir "lateralus-state.json"
 $SessionTtlHours = 24  # prune sessions not seen within this window

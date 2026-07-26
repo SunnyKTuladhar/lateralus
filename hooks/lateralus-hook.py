@@ -34,7 +34,13 @@ from pathlib import Path
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-THRESHOLD = int(os.environ.get("LATERALUS_THRESHOLD", "2"))
+def _safe_int(val: str | None, default: int) -> int:
+    try:
+        return int(val)  # type: ignore[arg-type]
+    except (ValueError, TypeError):
+        return default
+
+THRESHOLD = _safe_int(os.environ.get("LATERALUS_THRESHOLD"), 2)
 CLAUDE_DIR = Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude"))
 STATE_FILE = CLAUDE_DIR / "lateralus-state.json"
 SESSION_TTL_HOURS = 24  # prune sessions not seen in this window
@@ -158,7 +164,10 @@ def main() -> None:
     if not isinstance(response, dict):
         sys.exit(0)
 
-    exit_code = response.get("exit_code") or 0
+    try:
+        exit_code = int(response.get("exit_code") or 0)
+    except (ValueError, TypeError):
+        exit_code = 0
 
     # ── Success: clear failure state (stall resolved) ─────────────────────────
     if exit_code == 0:
