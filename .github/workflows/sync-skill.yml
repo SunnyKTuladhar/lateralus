@@ -5,8 +5,9 @@ on:
     branches: [ main ]
     paths:
       - "skills/lateralus/SKILL.md"
-      - "skills/lateralus-caveman/SKILL.md"
+      - "skills/lateralus/SKILL-caveman.md"
       - "skills/lateralus-brainstorm/SKILL.md"
+      - "skills/lateralus-brainstorm/SKILL-caveman.md"
       - ".github/workflows/sync-skill.yml"
   workflow_dispatch:
 
@@ -25,9 +26,11 @@ jobs:
           mkdir -p .github/skills/lateralus
           cp skills/lateralus/SKILL.md .github/skills/lateralus/SKILL.md
           mkdir -p .github/skills/lateralus-caveman
-          cp skills/lateralus-caveman/SKILL.md .github/skills/lateralus-caveman/SKILL.md
+          cp skills/lateralus/SKILL-caveman.md .github/skills/lateralus-caveman/SKILL.md
           mkdir -p .github/skills/lateralus-brainstorm
           cp skills/lateralus-brainstorm/SKILL.md .github/skills/lateralus-brainstorm/SKILL.md
+          mkdir -p .github/skills/lateralus-brainstorm-caveman
+          cp skills/lateralus-brainstorm/SKILL-caveman.md .github/skills/lateralus-brainstorm-caveman/SKILL.md
 
       - name: Commit if changed
         run: |
@@ -37,6 +40,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/skills/lateralus/SKILL.md .github/skills/lateralus-caveman/SKILL.md .github/skills/lateralus-brainstorm/SKILL.md
+          git add .github/skills/
           git commit -m "chore: sync lateralus skill mirrors [skip ci]"
           git push

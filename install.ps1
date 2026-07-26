@@ -17,8 +17,10 @@ $ClaudeDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } `
              else { Join-Path $HOME ".claude" }
 
 $Skills = @(
-  "skills/lateralus/SKILL.md",
-  "skills/lateralus-caveman/SKILL.md"
+  "skills/lateralus/SKILL.md:lateralus",
+  "skills/lateralus/SKILL-caveman.md:lateralus-caveman",
+  "skills/lateralus-brainstorm/SKILL.md:lateralus-brainstorm",
+  "skills/lateralus-brainstorm/SKILL-caveman.md:lateralus-brainstorm-caveman"
 )
 $Agents = @(
   "agents/lateralus-ideator-ground.md",
@@ -46,9 +48,19 @@ function Copy-Asset($RelPath, $DestDir) {
 }
 
 foreach ($s in $Skills) {
-  $name = Split-Path -Leaf (Split-Path -Parent $s)
-  Copy-Asset $s (Join-Path $ClaudeDir "skills\$name")
-  Write-Host "  v skill: $name"
+  $parts    = $s -split ":"
+  $skillSrc = $parts[0]
+  $skillName = $parts[1]
+  $destDir  = Join-Path $ClaudeDir "skills\$skillName"
+  $null = New-Item -ItemType Directory -Force -Path $destDir
+  $Local = Join-Path $Here $skillSrc.Replace("/", [IO.Path]::DirectorySeparatorChar)
+  $Dest  = Join-Path $destDir "SKILL.md"
+  if (Test-Path $Local) {
+    Copy-Item $Local $Dest -Force
+  } else {
+    Invoke-WebRequest "$Raw/$skillSrc" -OutFile $Dest -UseBasicParsing
+  }
+  Write-Host "  v skill: $skillName"
 }
 
 foreach ($a in $Agents) {

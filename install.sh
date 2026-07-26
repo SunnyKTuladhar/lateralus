@@ -17,8 +17,10 @@ RAW="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
 SKILLS=(
-  "skills/lateralus/SKILL.md"
-  "skills/lateralus-caveman/SKILL.md"
+  "skills/lateralus/SKILL.md:lateralus"
+  "skills/lateralus/SKILL-caveman.md:lateralus-caveman"
+  "skills/lateralus-brainstorm/SKILL.md:lateralus-brainstorm"
+  "skills/lateralus-brainstorm/SKILL-caveman.md:lateralus-brainstorm-caveman"
 )
 AGENTS=(
   "agents/lateralus-ideator-ground.md"
@@ -45,9 +47,16 @@ copy_file() {
   fi
 }
 
-for skill_path in "${SKILLS[@]}"; do
-  skill_name="$(basename "$(dirname "$skill_path")")"
-  copy_file "$skill_path" "${CLAUDE_DIR}/skills/${skill_name}"
+for skill_entry in "${SKILLS[@]}"; do
+  skill_src="${skill_entry%%:*}"
+  skill_name="${skill_entry##*:}"
+  dest_dir="${CLAUDE_DIR}/skills/${skill_name}"
+  mkdir -p "$dest_dir"
+  if [ -n "$here" ] && [ -f "$here/$skill_src" ]; then
+    cp "$here/$skill_src" "$dest_dir/SKILL.md"
+  else
+    curl -fsSL "${RAW}/${skill_src}" -o "$dest_dir/SKILL.md"
+  fi
   echo "  ✓ skill: ${skill_name}"
 done
 

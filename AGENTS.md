@@ -27,9 +27,13 @@ lateralus/
 ├── install.ps1                       # Windows PowerShell installer
 │
 ├── skills/                           # ALL skills — single source of truth
-│   ├── lateralus/{SKILL.md, README.md}
-│   ├── lateralus-caveman/SKILL.md    # Caveman-compressed variant
-│   └── lateralus-brainstorm/SKILL.md # Brainstorming / plan-mode skill
+│   ├── lateralus/
+│   │   ├── SKILL.md                  # Full debugging skill
+│   │   ├── SKILL-caveman.md          # Compressed variant (~60% fewer tokens)
+│   │   └── README.md
+│   └── lateralus-brainstorm/
+│       ├── SKILL.md                  # Full brainstorming / plan-mode skill
+│       └── SKILL-caveman.md          # Compressed variant
 │
 ├── agents/                           # Subagents — single source of truth
 │   ├── lateralus-ideator-ground.md   # Generates Tier 1 grounded hypotheses
@@ -44,7 +48,8 @@ lateralus/
 ├── .github/skills/                   # Copilot-discoverable mirrors (CI-synced)
 │   ├── lateralus/SKILL.md
 │   ├── lateralus-caveman/SKILL.md
-│   └── lateralus-brainstorm/SKILL.md
+│   ├── lateralus-brainstorm/SKILL.md
+│   └── lateralus-brainstorm-caveman/SKILL.md
 │
 └── .github/workflows/
     └── sync-skill.yml                # Syncs skills/ → .github/skills/ on push to main
@@ -57,8 +62,9 @@ lateralus/
 | I want to change... | Edit this file |
 |---|---|
 | Core skill behavior (tiers, horizon routing, rules) | `skills/lateralus/SKILL.md` |
-| Caveman-compressed variant | `skills/lateralus-caveman/SKILL.md` |
+| Debugging compressed variant | `skills/lateralus/SKILL-caveman.md` |
 | Brainstorming / plan-mode skill | `skills/lateralus-brainstorm/SKILL.md` |
+| Brainstorming compressed variant | `skills/lateralus-brainstorm/SKILL-caveman.md` |
 | Scout (interview + audit) | Built into `skills/lateralus/SKILL.md` Step 0 |
 | Tier 1 grounded hypotheses | `agents/lateralus-ideator-ground.md` |
 | Middle-ground hypotheses | `agents/lateralus-ideator-balanced.md` |
@@ -92,9 +98,10 @@ Three skills ship from this repo:
 
 | Skill | File | Purpose |
 |---|---|---|
-| `lateralus` | `skills/lateralus/SKILL.md` | Full skill — goal context + two-tier ideation |
-| `lateralus-caveman` | `skills/lateralus-caveman/SKILL.md` | Same behavior, ~60% fewer tokens |
+| `lateralus` | `skills/lateralus/SKILL.md` | Full debugging skill — goal context + two-tier ideation |
+| `lateralus-caveman` | `skills/lateralus/SKILL-caveman.md` | Same, ~60% fewer tokens |
 | `lateralus-brainstorm` | `skills/lateralus-brainstorm/SKILL.md` | Brainstorming / plan mode — Grounded, Balanced, Wild |
+| `lateralus-brainstorm-caveman` | `skills/lateralus-brainstorm/SKILL-caveman.md` | Same, ~60% fewer tokens |
 
 Each skill has:
 - A `SKILL.md` (LLM-facing prompt body — what the agent loads)
