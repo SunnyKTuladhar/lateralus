@@ -14,12 +14,6 @@ irm https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/install.ps1 
 
 Copies skills, agents, and a `PostToolUse` hook into `~/.claude/`. Also wires the hook into `~/.claude/settings.json`. Safe to re-run.
 
-## Claude Code plugin
-
-```bash
-claude plugin marketplace add SunnyKTuladhar/lateralus && claude plugin install lateralus@lateralus
-```
-
 ## GitHub Copilot (repo-local)
 
 ```bash

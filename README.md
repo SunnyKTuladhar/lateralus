@@ -21,11 +21,6 @@ curl -fsSL https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/insta
 irm https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/install.ps1 | iex
 ```
 
-**Claude Code plugin**
-```bash
-claude plugin marketplace add SunnyKTuladhar/lateralus && claude plugin install lateralus@lateralus
-```
-
 See [INSTALL.md](./INSTALL.md) for Copilot, manual, and per-directory options.
 
 ## How it works
@@ -65,5 +60,4 @@ skills/lateralus/          source-of-truth skill
 skills/lateralus-caveman/  compressed variant
 agents/                    four subagents
 .github/skills/            Copilot-discoverable mirrors
-.claude-plugin/            Claude Code plugin manifest
 ```

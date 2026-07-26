@@ -6,7 +6,7 @@ Lateralus is a lateral-thinking skill for AI coding agents that breaks debugging
 It surfaces the user's end goal and solution horizon (long-term, MVP, POC, workaround), then generates
 goal-appropriate alternatives in two tiers: grounded-but-unlikely and wild/speculative reframes.
 
-Ships as a Claude Code plugin, Copilot repo skill, and direct install via `install.sh` / `install.ps1`.
+Ships as a Copilot repo skill and direct install via `install.sh` / `install.ps1`.
 
 ---
 
@@ -37,10 +37,6 @@ lateralus/
 │   ├── lateralus-hook.py             # Python hook (macOS / Linux / WSL)
 │   └── lateralus-hook.ps1            # PowerShell hook (Windows, requires pwsh 6+)
 │
-├── .claude-plugin/                   # Claude Code plugin manifest
-│   ├── plugin.json                   # Plugin metadata and agents array
-│   └── marketplace.json              # Marketplace listing
-│
 ├── .github/skills/                   # Copilot-discoverable mirrors (CI-synced)
 │   ├── lateralus/SKILL.md
 │   └── lateralus-caveman/SKILL.md
@@ -63,8 +59,6 @@ lateralus/
 | Tier 3 wild reframes | `agents/lateralus-ideator-wild.md` |
 | Makeshift bypass rules | `agents/lateralus-workaround.md` |
 | Hook behavior | `hooks/lateralus-hook.py`, `hooks/lateralus-hook.ps1` |
-| Plugin metadata | `.claude-plugin/plugin.json` |
-| Marketplace listing | `.claude-plugin/marketplace.json` |
 | Install steps | `install.sh`, `install.ps1`, `INSTALL.md` |
 
 Do NOT edit `.github/skills/` directly — those are CI-synced mirrors.
