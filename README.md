@@ -1,8 +1,8 @@
 # lateralus
 
-Lateral-thinking skill for AI coding agents when debugging gets stuck.
+<img src="lateralus_icon.png" alt="lateralus icon" width="120" />
 
-Understands your end goal (long-term fix, MVP, POC, workaround) and generates goal-appropriate alternatives — or tactical makeshift bypasses when you just need to move.
+🌀 The lateral-thinking skill for when you need to turn your coding agent into a proper thinking machine — brainstorm features, crack stubborn bugs, or just overthink and overanalyse. Three thinking levels (**Grounded**, **Balanced**, and **Wild**) to match whatever your situation actually needs.
 
 ## Install
 
