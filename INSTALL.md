@@ -35,7 +35,6 @@ bash install.sh
 | File | Destination |
 |---|---|
 | `skills/lateralus/SKILL.md` | `~/.claude/skills/lateralus/` |
-| `skills/lateralus-caveman/SKILL.md` | `~/.claude/skills/lateralus-caveman/` |
 | `agents/lateralus-ideator-ground.md` | `~/.claude/agents/` |
 | `agents/lateralus-ideator-balanced.md` | `~/.claude/agents/` |
 | `agents/lateralus-ideator-wild.md` | `~/.claude/agents/` |
@@ -50,7 +49,6 @@ The hook is also wired into `~/.claude/settings.json` under `hooks.PostToolUse`.
 | Command | What |
 |---|---|
 | `/lateralus` | Full lateral-thinking pass after debugging stalls |
-| `/lateralus-caveman` | Same, 60% fewer tokens |
 
 Natural language triggers: `"still broken"`, `"same error"`, `"tried that already"`, `"going in circles"`
 

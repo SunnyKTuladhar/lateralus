@@ -40,9 +40,7 @@ Only triggers after normal debugging has genuinely stalled — not on first atte
 | Command | Use when |
 |---|---|
 | `/lateralus` | Default — full debugging analysis, maximum detail |
-| `/lateralus-caveman` | Context window nearly full, want faster responses (~60% fewer tokens) |
 | `/lateralus-brainstorm` | Planning new work — Grounded, Balanced, or Wild idea generation. Also activates in plan mode. |
-| `/lateralus-brainstorm-caveman` | Same as above, compressed (~60% fewer tokens) |
 
 ## Usage examples
 
@@ -125,8 +123,8 @@ The skill auto-routes to the right agents after the interrogation step. You can 
 ## Repository layout
 
 ```
-skills/lateralus/          SKILL.md + SKILL-caveman.md
-skills/lateralus-brainstorm/ SKILL.md + SKILL-caveman.md
+skills/lateralus/          SKILL.md
+skills/lateralus-brainstorm/ SKILL.md
 agents/                    four subagents
 .github/skills/            Copilot-discoverable mirrors (CI-synced)
 ```

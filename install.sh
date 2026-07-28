@@ -18,9 +18,7 @@ CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
 SKILLS=(
   "skills/lateralus/SKILL.md:lateralus"
-  "skills/lateralus/SKILL-caveman.md:lateralus-caveman"
   "skills/lateralus-brainstorm/SKILL.md:lateralus-brainstorm"
-  "skills/lateralus-brainstorm/SKILL-caveman.md:lateralus-brainstorm-caveman"
 )
 AGENTS=(
   "agents/lateralus-ideator-ground.md"
@@ -124,7 +122,6 @@ PYEOF
 echo ""
 echo "Done. Open Claude Code and type /lateralus to use."
 echo "For workarounds: /lateralus-workaround"
-echo "For compressed mode: /lateralus-caveman"
 echo ""
 echo "Hook: lateralus-hook.py fires on every Bash tool call and nudges /lateralus when a"
 echo "      failure signature recurs after edits. Set LATERALUS_THRESHOLD to adjust sensitivity."

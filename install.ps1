@@ -18,9 +18,7 @@ $ClaudeDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } `
 
 $Skills = @(
   "skills/lateralus/SKILL.md:lateralus",
-  "skills/lateralus/SKILL-caveman.md:lateralus-caveman",
-  "skills/lateralus-brainstorm/SKILL.md:lateralus-brainstorm",
-  "skills/lateralus-brainstorm/SKILL-caveman.md:lateralus-brainstorm-caveman"
+  "skills/lateralus-brainstorm/SKILL.md:lateralus-brainstorm"
 )
 $Agents = @(
   "agents/lateralus-ideator-ground.md",
@@ -127,7 +125,6 @@ if (-not $PwshCmd -or $PSVersionTable.PSVersion.Major -lt 6) {
 Write-Host ""
 Write-Host "Done. Open Claude Code and type /lateralus to use."
 Write-Host "For workarounds: /lateralus-workaround"
-Write-Host "For compressed mode: /lateralus-caveman"
 Write-Host ""
 Write-Host "Hook: lateralus-hook.ps1 fires on every Bash tool call and nudges /lateralus when"
 Write-Host "      a failure signature recurs after edits. Set LATERALUS_THRESHOLD to adjust sensitivity."
