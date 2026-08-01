@@ -13,6 +13,8 @@ Edit source-of-truth files only:
 **Skills:**
 - `skills/lateralus/SKILL.md` — agent-facing behavior (full)
 - `skills/lateralus/README.md` — human-facing explanation
+- `skills/lateralus-brainstorm/SKILL.md` — brainstorming skill (agent-facing)
+- `skills/lateralus-brainstorm/README.md` — brainstorming skill README
 
 **Agents:**
 - `agents/lateralus-ideator-ground.md` — Tier 1
@@ -22,6 +24,7 @@ Edit source-of-truth files only:
 
 **Mirrors (CI-synced — do not edit directly):**
 - `.github/skills/lateralus/SKILL.md`
+- `.github/skills/lateralus-brainstorm/SKILL.md`
 
 ## Authoring rules
 

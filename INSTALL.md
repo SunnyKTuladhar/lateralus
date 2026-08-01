@@ -18,8 +18,11 @@ Copies skills, agents, and a `PostToolUse` hook into `~/.claude/`. Also wires th
 
 ```bash
 mkdir -p .github/skills/lateralus
+mkdir -p .github/skills/lateralus-brainstorm
 curl -fsSL https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/skills/lateralus/SKILL.md \
   > .github/skills/lateralus/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/SunnyKTuladhar/lateralus/main/skills/lateralus-brainstorm/SKILL.md \
+  > .github/skills/lateralus-brainstorm/SKILL.md
 ```
 
 ## Manual (local clone)
@@ -35,6 +38,7 @@ bash install.sh
 | File | Destination |
 |---|---|
 | `skills/lateralus/SKILL.md` | `~/.claude/skills/lateralus/` |
+| `skills/lateralus-brainstorm/SKILL.md` | `~/.claude/skills/lateralus-brainstorm/` |
 | `agents/lateralus-ideator-ground.md` | `~/.claude/agents/` |
 | `agents/lateralus-ideator-balanced.md` | `~/.claude/agents/` |
 | `agents/lateralus-ideator-wild.md` | `~/.claude/agents/` |
