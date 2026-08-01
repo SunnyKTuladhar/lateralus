@@ -1,8 +1,8 @@
-# lateralus
+# Lateralus-skill
 
 <img src="lateralus_icon.png" alt="lateralus icon" width="120" />
 
-🌀 The lateral-thinking skill for when you need to turn your coding agent into a proper thinking machine — brainstorm features, crack stubborn bugs, or just overthink and overanalyse. Three thinking levels (**Grounded**, **Balanced**, and **Wild**) to match whatever your situation actually needs.
+🌀 Lateralus, the lateral-thinking skill for when you need to turn your coding agent into a proper thinking machine — brainstorm features, crack stubborn bugs, or just overthink and overanalyse. Three thinking levels (**Grounded**, **Balanced**, and **Wild**) to match whatever your situation actually needs.
 
 ## Install
 
