@@ -1,0 +1,8 @@
+{
+  "name": "lateralus",
+  "description": "Lateral-thinking skill for AI coding agents. Breaks debugging tunnel vision by surfacing end goals, solution horizons, and goal-appropriate alternatives across three tiers: Grounded, Balanced, and Wild.",
+  "author": {
+    "name": "Sunny K. Tuladhar",
+    "url": "https://github.com/SunnyKTuladhar"
+  }
+}

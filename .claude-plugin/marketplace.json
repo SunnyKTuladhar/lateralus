@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "lateralus",
+  "description": "Lateral-thinking skill for AI coding agents. Breaks debugging tunnel vision and surfaces goal-appropriate alternatives across Grounded, Balanced, and Wild tiers.",
+  "owner": {
+    "name": "Sunny K. Tuladhar",
+    "url": "https://github.com/SunnyKTuladhar"
+  },
+  "plugins": [
+    {
+      "name": "lateralus",
+      "description": "Break debugging tunnel vision. Surface end goals and generate alternatives across three thinking tiers plus a workaround path.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
